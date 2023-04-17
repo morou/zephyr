@@ -871,6 +871,8 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 
 	old_state = conn->state;
 	conn->state = state;
+	LOG_ERR("<NEKOE> bt_conn_set_state-0: %s -> %s", state2str(conn->state), state2str(state));
+
 
 	/* Actions needed for exiting the old state */
 	switch (old_state) {
@@ -914,6 +916,7 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 
 		if (IS_ENABLED(CONFIG_BT_PERIPHERAL) &&
 		    conn->role == BT_CONN_ROLE_PERIPHERAL) {
+			LOG_ERR("<NEKOE> bt_conn_set_state-1");
 			k_work_schedule(&conn->deferred_work,
 					CONN_UPDATE_TIMEOUT);
 		}
@@ -1017,6 +1020,7 @@ void bt_conn_set_state(struct bt_conn *conn, bt_conn_state_t state)
 		 */
 		if (IS_ENABLED(CONFIG_BT_CENTRAL) &&
 		    conn->type == BT_CONN_TYPE_LE) {
+			LOG_ERR("<NEKOE> bt_conn_set_state-2: timeout: %d", bt_dev.create_param.timeout);
 			k_work_schedule(&conn->deferred_work,
 					K_MSEC(10 * bt_dev.create_param.timeout));
 		}
@@ -1615,6 +1619,7 @@ static void deferred_work(struct k_work *work)
 		}
 #endif
 
+		LOG_ERR("<NEKOE> deferred_work: state: %d err: %d", conn->state, conn->err);
 		bt_l2cap_disconnected(conn);
 		notify_disconnected(conn);
 
@@ -2030,6 +2035,8 @@ void bt_conn_security_changed(struct bt_conn *conn, uint8_t hci_err,
 			      enum bt_security_err err)
 {
 	struct bt_conn_cb *cb;
+
+	LOG_ERR("<NEKOE> hci_err: %d err: %d", hci_err, err);
 
 	reset_pairing(conn);
 	bt_l2cap_security_changed(conn, hci_err);

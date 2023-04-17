@@ -789,6 +789,7 @@ void bt_hci_auth_complete(struct net_buf *buf)
 		 * Inform layers above HCI about non-zero authentication
 		 * status to make them able cleanup pending jobs.
 		 */
+		LOG_ERR("<NEKOE> 7");
 		bt_conn_security_changed(conn, evt->status,
 					 bt_security_err_get(evt->status));
 	} else {

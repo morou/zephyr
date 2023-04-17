@@ -1927,6 +1927,7 @@ static void smp_pairing_complete(struct bt_smp *smp, uint8_t status)
 		}
 
 		if (!atomic_test_bit(smp->flags, SMP_FLAG_KEYS_DISTR)) {
+			LOG_ERR("<NEKOE> smp_pairing_complete: status: %d", status);
 			bt_conn_security_changed(conn,
 						 hci_err_get(security_err),
 						 security_err);
@@ -1961,6 +1962,7 @@ static void smp_timeout(struct k_work *work)
 
 	BT_ERR("SMP Timeout");
 
+	LOG_ERR("<NEKOE> smp_timeout");
 	smp_pairing_complete(smp, BT_SMP_ERR_UNSPECIFIED);
 
 	/* smp_pairing_complete clears flags so setting timeout flag must come
@@ -1989,6 +1991,7 @@ static int smp_error(struct bt_smp *smp, uint8_t reason)
 	    atomic_test_bit(smp->flags, SMP_FLAG_ENC_PENDING) ||
 	    atomic_test_bit(smp->flags, SMP_FLAG_SEC_REQ)) {
 		/* reset context and report */
+		LOG_ERR("<NEKOE> smp_error: reason: %d", reason);
 		smp_pairing_complete(smp, reason);
 	}
 
@@ -2958,6 +2961,7 @@ bool bt_smp_request_ltk(struct bt_conn *conn, uint64_t rand, uint16_t ediv, uint
 		/* Notify higher level that security failed if security was
 		 * initiated by peripheral.
 		 */
+		LOG_ERR("<NEKOE> 6");
 		bt_conn_security_changed(conn, BT_HCI_ERR_PIN_OR_KEY_MISSING,
 					 BT_SECURITY_ERR_PIN_OR_KEY_MISSING);
 	}
@@ -3900,6 +3904,7 @@ static uint8_t smp_pairing_failed(struct bt_smp *smp, struct net_buf *buf)
 		}
 	}
 
+	LOG_ERR("<NEKOE> smp_pairing_failed: reason: %d", req->reason);
 	smp_pairing_complete(smp, req->reason);
 
 	/* return no error to avoid sending Pairing Failed in response */
@@ -4655,6 +4660,7 @@ static void bt_smp_disconnected(struct bt_l2cap_chan *chan)
 	    atomic_test_bit(smp->flags, SMP_FLAG_ENC_PENDING) ||
 	    atomic_test_bit(smp->flags, SMP_FLAG_SEC_REQ)) {
 		/* reset context and report */
+		LOG_ERR("<NEKOE> bt_smp_disconnected");
 		smp_pairing_complete(smp, BT_SMP_ERR_UNSPECIFIED);
 	}
 
@@ -4695,6 +4701,7 @@ static void bt_smp_encrypt_change(struct bt_l2cap_chan *chan,
 				bt_security_err_get(hci_status));
 
 			/* Fail as if it happened during key distribution */
+			LOG_ERR("<NEKOE> bt_smp_encrypt_change: hci_status: %d", hci_status);
 			atomic_set_bit(smp->flags, SMP_FLAG_KEYS_DISTR);
 			smp_pairing_complete(smp, smp_err);
 		}

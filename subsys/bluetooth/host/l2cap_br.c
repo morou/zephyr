@@ -148,6 +148,7 @@ l2cap_br_chan_alloc_cid(struct bt_conn *conn, struct bt_l2cap_chan *chan)
 static void l2cap_br_chan_cleanup(struct bt_l2cap_chan *chan)
 {
 	bt_l2cap_chan_remove(chan->conn, chan);
+	LOG_ERR("<NEKOE> l2cap_br_chan_cleanup");
 	bt_l2cap_chan_del(chan);
 }
 
@@ -1132,6 +1133,7 @@ static void l2cap_br_disconn_req(struct bt_l2cap_br *l2cap, uint8_t ident,
 	rsp->dcid = sys_cpu_to_le16(chan->rx.cid);
 	rsp->scid = sys_cpu_to_le16(chan->tx.cid);
 
+	LOG_ERR("<NEKOE> l2cap_br_disconn_req");
 	bt_l2cap_chan_del(&chan->chan);
 
 	l2cap_send(conn, BT_L2CAP_CID_BR_SIG, buf);
@@ -1220,6 +1222,7 @@ static void l2cap_br_disconn_rsp(struct bt_l2cap_br *l2cap, uint8_t ident,
 		return;
 	}
 
+	LOG_ERR("<NEKOE> l2cap_br_disconn_rsp");
 	bt_l2cap_chan_del(&chan->chan);
 }
 

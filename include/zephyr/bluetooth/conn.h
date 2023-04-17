@@ -312,6 +312,8 @@ enum {
 	BT_CONN_ROLE_PERIPHERAL = 1,
 };
 
+#define BT_ROLE_STR(___n_) (___n_ == BT_CONN_ROLE_CENTRAL ? "central" : "peripheral")
+
 enum bt_conn_state {
 	/** Channel disconnected */
 	BT_CONN_STATE_DISCONNECTED,
@@ -799,6 +801,20 @@ enum bt_security_err {
 	/** Pairing failed but the exact reason could not be specified. */
 	BT_SECURITY_ERR_UNSPECIFIED,
 };
+
+#define BT_SECURITY_ERR_STR(___n_) (\
+  ___n_ == BT_SECURITY_ERR_SUCCESS            ? "success" \
+: ___n_ == BT_SECURITY_ERR_AUTH_FAIL          ? "auth fail" \
+: ___n_ == BT_SECURITY_ERR_PIN_OR_KEY_MISSING ? "PIN or key missing" \
+: ___n_ == BT_SECURITY_ERR_OOB_NOT_AVAILABLE  ? "OOB not available" \
+: ___n_ == BT_SECURITY_ERR_AUTH_REQUIREMENT   ? "auth requirement" \
+: ___n_ == BT_SECURITY_ERR_PAIR_NOT_SUPPORTED ? "pair not supported" \
+: ___n_ == BT_SECURITY_ERR_PAIR_NOT_ALLOWED   ? "pair not allowed" \
+: ___n_ == BT_SECURITY_ERR_INVALID_PARAM      ? "invalid param" \
+: ___n_ == BT_SECURITY_ERR_KEY_REJECTED       ? "key rejected" \
+: ___n_ == BT_SECURITY_ERR_UNSPECIFIED        ? "unspecified" \
+:                    						    "unknonw error" \
+)
 
 /** @brief Connection callback structure.
  *

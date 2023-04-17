@@ -269,6 +269,7 @@ void bt_l2cap_chan_del(struct bt_l2cap_chan *chan)
 	}
 
 	if (ops->disconnected) {
+		LOG_ERR("<NEKOE> bt_l2cap_chan_del");
 		ops->disconnected(chan);
 	}
 
@@ -298,6 +299,7 @@ static void l2cap_rtx_timeout(struct k_work *work)
 	BT_ERR("chan %p timeout", chan);
 
 	bt_l2cap_chan_remove(conn, &chan->chan);
+	LOG_ERR("<NEKOE> l2cap_rtx_timeout");
 	bt_l2cap_chan_del(&chan->chan);
 
 	/* Remove other channels if pending on the same ident */
@@ -418,6 +420,7 @@ void bt_l2cap_disconnected(struct bt_conn *conn)
 {
 	struct bt_l2cap_chan *chan, *next;
 
+	LOG_ERR("<NEKOE> bt_l2cap_disconnected");
 	SYS_SLIST_FOR_EACH_CONTAINER_SAFE(&conn->channels, chan, next, node) {
 		bt_l2cap_chan_del(chan);
 	}
@@ -604,6 +607,7 @@ static void l2cap_le_encrypt_change(struct bt_l2cap_chan *chan, uint8_t status)
 
 	return;
 fail:
+	LOG_ERR("<NEKOE> l2cap_le_encrypt_change: status: %d", status);
 	bt_l2cap_chan_remove(chan->conn, chan);
 	bt_l2cap_chan_del(chan);
 }
@@ -1506,6 +1510,7 @@ static void le_disconn_req(struct bt_l2cap *l2cap, uint8_t ident,
 	rsp->dcid = sys_cpu_to_le16(chan->rx.cid);
 	rsp->scid = sys_cpu_to_le16(chan->tx.cid);
 
+	LOG_ERR("<NEKOE> le_disconn_req");
 	bt_l2cap_chan_del(&chan->chan);
 
 	l2cap_send(conn, BT_L2CAP_CID_LE_SIG, buf);
@@ -1600,6 +1605,7 @@ static void le_ecred_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 				return;
 			}
 			bt_l2cap_chan_remove(conn, &chan->chan);
+			LOG_ERR("<NEKOE> le_ecred_conn_rsp: 1");
 			bt_l2cap_chan_del(&chan->chan);
 		}
 		break;
@@ -1619,6 +1625,7 @@ static void le_ecred_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 			if (buf->len < sizeof(dcid)) {
 				BT_ERR("Fewer dcid values than expected");
 				bt_l2cap_chan_remove(conn, &chan->chan);
+				LOG_ERR("<NEKOE> le_ecred_conn_rsp: 2");
 				bt_l2cap_chan_del(&chan->chan);
 				continue;
 			}
@@ -1633,6 +1640,7 @@ static void le_ecred_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 			 */
 			if (!dcid) {
 				bt_l2cap_chan_remove(conn, &chan->chan);
+				LOG_ERR("<NEKOE> le_ecred_conn_rsp: 3");
 				bt_l2cap_chan_del(&chan->chan);
 				continue;
 			}
@@ -1647,6 +1655,7 @@ static void le_ecred_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 				 * not used.
 				 */
 				bt_l2cap_chan_remove(conn, &chan->chan);
+				LOG_ERR("<NEKOE> le_ecred_conn_rsp: 4");
 				bt_l2cap_chan_del(&chan->chan);
 				bt_l2cap_chan_disconnect(c);
 				continue;
@@ -1676,6 +1685,7 @@ static void le_ecred_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 		break;
 	case BT_L2CAP_LE_ERR_PSM_NOT_SUPP:
 	default:
+		LOG_ERR("<NEKOE> le_ecred_conn_rsp: 5");
 		while ((chan = l2cap_remove_ident(conn, ident))) {
 			bt_l2cap_chan_del(&chan->chan);
 		}
@@ -1757,6 +1767,7 @@ static void le_conn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 		bt_l2cap_chan_remove(conn, &chan->chan);
 		__fallthrough;
 	default:
+		LOG_ERR("<NEKOE> le_conn_rsp");
 		bt_l2cap_chan_del(&chan->chan);
 	}
 }
@@ -1783,6 +1794,7 @@ static void le_disconn_rsp(struct bt_l2cap *l2cap, uint8_t ident,
 		return;
 	}
 
+	LOG_ERR("<NEKOE> le_disconn_rsp");
 	bt_l2cap_chan_del(&chan->chan);
 }
 
@@ -2150,6 +2162,7 @@ static void reject_cmd(struct bt_l2cap *l2cap, uint8_t ident,
 		return;
 	}
 
+	LOG_ERR("<NEKOE> reject_cmd");
 	bt_l2cap_chan_del(&chan->chan);
 }
 #endif /* CONFIG_BT_L2CAP_DYNAMIC_CHANNEL */
@@ -2758,6 +2771,7 @@ static int l2cap_le_connect(struct bt_conn *conn, struct bt_l2cap_le_chan *ch,
 	return 0;
 
 fail:
+	LOG_ERR("<NEKOE> l2cap_le_connect");
 	bt_l2cap_chan_remove(conn, &ch->chan);
 	bt_l2cap_chan_del(&ch->chan);
 	return err;

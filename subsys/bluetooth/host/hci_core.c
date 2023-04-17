@@ -1800,6 +1800,8 @@ static void hci_encrypt_change(struct net_buf *buf)
 	}
 
 	if (status) {
+		LOG_ERR("<NEKOE> 1");
+		
 		bt_conn_security_changed(conn, status,
 					 bt_security_err_get(status));
 		bt_conn_unref(conn);
@@ -1847,6 +1849,7 @@ static void hci_encrypt_change(struct net_buf *buf)
 	}
 #endif /* CONFIG_BT_BREDR */
 
+	LOG_ERR("<NEKOE> 2");
 	bt_conn_security_changed(conn, status, bt_security_err_get(status));
 
 	if (status) {
@@ -1875,6 +1878,7 @@ static void hci_encrypt_key_refresh_complete(struct net_buf *buf)
 	}
 
 	if (status) {
+		LOG_ERR("<NEKOE> 3");
 		bt_conn_security_changed(conn, status,
 					 bt_security_err_get(status));
 		bt_conn_unref(conn);
@@ -1905,6 +1909,7 @@ static void hci_encrypt_key_refresh_complete(struct net_buf *buf)
 	}
 #endif /* CONFIG_BT_BREDR */
 
+	LOG_ERR("<NEKOE> 4");
 	bt_conn_security_changed(conn, status, bt_security_err_get(status));
 	if (status) {
 		BT_ERR("Failed to set required security level");

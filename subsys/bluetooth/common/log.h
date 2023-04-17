@@ -29,11 +29,12 @@ extern "C" {
 #define BT_DBG_ENABLED 1
 #endif
 
-#if BT_DBG_ENABLED
-#define LOG_LEVEL LOG_LEVEL_DBG
-#else
-#define LOG_LEVEL CONFIG_BT_LOG_LEVEL
-#endif
+// #if BT_DBG_ENABLED
+// #define LOG_LEVEL LOG_LEVEL_DBG
+// #else
+// #define LOG_LEVEL CONFIG_BT_LOG_LEVEL
+// #endif
+#define LOG_LEVEL LOG_LEVEL_ERR
 
 LOG_MODULE_REGISTER(LOG_MODULE_NAME, LOG_LEVEL);
 
